@@ -1,0 +1,26 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: product 
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: product 
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+      - name: product
+        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/product:v1
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "10Mi"
+            cpu: "10m"
+          requests:
+            memory: "5Mi"
+            cpu: "5m" 

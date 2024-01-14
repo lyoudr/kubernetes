@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress 
+metadata:
+  name: product-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce" # TODO -> create a static external IP, and create Appplication Load Balancer
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-example
+  rules:
+  - http:
+      paths:
+      - path: /product
+        pathType: Prefix
+        backend:
+          service:
+            name: product-service
+            port:
+              number: 80
+      - path: /sales
+        pathType: Prefix
+        backend:
+          service:
+            name: sales-service
+            port: 
+              number: 80

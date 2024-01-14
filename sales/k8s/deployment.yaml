@@ -1,0 +1,38 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: sales 
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: sales 
+  template:
+    metadata:
+      labels:
+        app: sales
+    spec:
+      containers:
+      - name: sales
+        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/sales:v1
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "10Mi"
+            cpu: "10m"
+          requests:
+            memory: "5Mi"
+            cpu: "5m" 
+        # readinessProbe:
+        #   httpGet:
+        #     path: /healthz
+        #     port: 8080
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /livez
+        #     port: 8080
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 10
