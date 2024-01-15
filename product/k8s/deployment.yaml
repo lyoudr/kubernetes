@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: product
-        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/product:v1
+        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/product:v10
         ports:
         - containerPort: 80
         resources:

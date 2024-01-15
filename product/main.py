@@ -8,10 +8,17 @@ app = FastAPI()
 def read_root():
     return {"message": "Hello World!"}
 
-@app.get('/get_sales')
+@app.get('/product')
 def get_sales():
-    res = requests.get('http://sales-service/sales')
-    return res 
+    return {"message": "ok"}
 
+@app.get('/product/aaa')
+def get_sales():
+    return {"message": "ok"}
+
+@app.get('/product/bbb')
+def get_sales():
+    res = requests.get('/sales')
+    return res
 
     

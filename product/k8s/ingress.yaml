@@ -3,22 +3,39 @@ kind: Ingress
 metadata:
   name: product-ingress
   annotations:
-    kubernetes.io/ingress.class: "gce" # TODO -> create a static external IP, and create Appplication Load Balancer
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    # There are two GKE Ingress classes. To specify an Ingress class, you must use the kubernetes.io/ingress.class annotation. You cannot specify a GKE Ingress using spec.ingressClassName.
+    # The gce class deploys an external Application Load Balancer.
+    # The gce-internal class deploys an internal Application Load Balancer. 
+    kubernetes.io/ingress.class: "gce" 
+    # nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-example
+  # ingressClassName: nginx-example
   rules:
   - http:
-      paths:
+      paths:  
       - path: /product
-        pathType: Prefix
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: product-service
+            port:
+              number: 80
+      - path: /product/*
+        pathType: ImplementationSpecific
         backend:
           service:
             name: product-service
             port:
               number: 80
       - path: /sales
-        pathType: Prefix
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: sales-service
+            port: 
+              number: 80
+      - path: /sales/*
+        pathType: ImplementationSpecific
         backend:
           service:
             name: sales-service
