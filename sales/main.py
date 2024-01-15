@@ -2,11 +2,11 @@ from fastapi import FastAPI
 
 app = FastAPI() 
 
-@app.get('/')
+@app.get('/healthz')
 def read_root():
     return {"message": "Healthy"}
 
-@app.get('/livez')
+@app.get('/sales/livez')
 def liveness():
     return {"message": "alive"}
 

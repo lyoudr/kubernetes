@@ -1,5 +1,7 @@
 from fastapi import FastAPI 
 import requests
+import json
+
 
 app = FastAPI() 
 
@@ -18,7 +20,7 @@ def get_sales():
 
 @app.get('/product/bbb')
 def get_sales():
-    res = requests.get('/sales')
-    return res
+    res = requests.get('http://10.107.0.50/sales')
+    return res.json()
 
     
