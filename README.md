@@ -12,7 +12,7 @@
 #### Sales Service
 ---
 1. Wrap app in this image
-- Dockerfile
+    - Dockerfile
     ```
     # Dockerfile
     FROM python:3.9-slim
@@ -32,7 +32,7 @@
     gcloud builds submit --tag asia-east1-docker.pkg.dev/{project_name}/ann-test/sales:v18 .
     `
 3. Put this image in a Pod, and deploy this pod to GKE
-- deployment.yaml
+    - deployment.yaml
     ```
     apiVersion: apps/v1 
     kind: Deployment
@@ -61,12 +61,12 @@
                 memory: "5Mi"
                 cpu: "5m" 
     ```
-- deploy
+    - deploy
 
     `kubectl apply -f k8s/deployment.yaml`
 
 4. Define a Service to include this Pod
-- service.yaml
+    - service.yaml
     ```
     apiVersion: v1
     kind: Service
