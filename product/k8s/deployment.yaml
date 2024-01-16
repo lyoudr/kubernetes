@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: product
-        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/product:v13
+        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/product:v18
         ports:
         - containerPort: 80
         resources:
@@ -23,4 +23,18 @@ spec:
             cpu: "10m"
           requests:
             memory: "5Mi"
-            cpu: "5m" 
+            cpu: "5m"
+        env: 
+          - name: POSTGRES_HOST
+            value: pgsql  # The hostname of your PostgreSQL service (serviceName in StatefulSet)
+          - name: POSTGRES_PORT
+            value: "5432"  # The port on which PostgreSQL is running
+          - name: POSTGRES_DB
+            value: ann  # The name of your PostgreSQL database
+          - name: POSTGRES_USER
+            value: ann  # The username for connecting to PostgreSQL
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pgsql
+                key: POSTGRES_PASSWORD  # Reference to the Secret for PostgreSQL password

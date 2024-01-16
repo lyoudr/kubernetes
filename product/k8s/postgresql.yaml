@@ -1,0 +1,62 @@
+---
+apiVersion: v1 
+kind: Secret 
+metadata:
+  name: pgsql
+type: Opaque  # is the tytpe of Secret. It means that the Secret can contain any arbitrary data.
+data:
+  POSTGRES_PASSWORD: YW5ucGFzc3dk  # base64-encoded value of "annpasswd"
+---
+apiVersion: apps/v1
+kind: StatefulSet # is a higher-level abstraction for managing stateful applications. It is used to deploy and scale applications that require stable network identifiers and persistent storage, such as databases.
+metadata:
+  name: pgsql 
+  labels:
+    app: pgsql 
+spec:
+  serviceName: pgsql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgsql
+  template:
+    metadata:
+      labels:
+        app: pgsql 
+    spec:
+      containers:
+      - name: pgsql
+        image: postgres:14.5
+        imagePullPolicy: IfNotPresent 
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            memory: 2Gi 
+        env:
+          - name: POSTGRES_DB
+            value: ann
+          - name: POSTGRES_USER
+            value: ann 
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pgsql
+                key: POSTGRES_PASSWORD
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+        ports:
+        - containerPort: 5432 
+          name: postgresdb 
+        volumeMounts:
+        - name: postgres-data 
+          mountPath: /var/lib/postgresql/data 
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: standard-rwo
+      resources:
+        requests:
+          storage: 100Gi

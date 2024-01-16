@@ -10,4 +10,6 @@ starlette==0.35.1
 typing_extensions==4.9.0
 uvicorn==0.25.0
 requests==2.31.0
+SQLAlchemy==2.0.25
+psycopg2-binary==2.9.9
 

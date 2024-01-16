@@ -24,15 +24,3 @@ spec:
           requests:
             memory: "5Mi"
             cpu: "5m" 
-        # readinessProbe:
-        #   httpGet:
-        #     path: /healthz
-        #     port: 8080
-        #   initialDelaySeconds: 5
-        #   periodSeconds: 5
-        # livenessProbe:
-        #   httpGet:
-        #     path: /livez
-        #     port: 8080
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 10
