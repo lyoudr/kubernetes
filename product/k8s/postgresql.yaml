@@ -16,10 +16,10 @@ metadata:
 spec:
   serviceName: pgsql
   replicas: 1
-  selector:
+  selector:      #  It uses the label selector to match pods with the label `app: pgsql` 
     matchLabels:
       app: pgsql
-  template:
+  template:      # Describe the pod template for the StatefulSet.
     metadata:
       labels:
         app: pgsql 
@@ -51,12 +51,12 @@ spec:
         volumeMounts:
         - name: postgres-data 
           mountPath: /var/lib/postgresql/data 
-  volumeClaimTemplates:
+  volumeClaimTemplates:                  # Persistent Volume Claim (PVC): Describes the persistent volume claim template for the StatefulSet
   - metadata:
       name: postgres-data
     spec:
       accessModes: ["ReadWriteOnce"]
-      storageClassName: standard-rwo
+      storageClassName: standard-rwo     # specifies which Storage Class should be used for dynamically provisioning the Persistent Volume associated with each PVC.
       resources:
         requests:
           storage: 100Gi

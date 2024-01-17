@@ -16,7 +16,10 @@ spec:
   # ClusterIP: Exposes the service on a cluster-internal IP address. This type makes the service only accessible within the cluster.
   # NodePort: Exposes the service on each Node's IP at a static port (NodePort). The service is accessible externally at the Node's IP and the specified port.
   # LoadBalancer: Creates an external load balancer in the cloud provider's infrastructure and assigns a public IP. The service is accessible externally through this load balancer.
-  ## SourceRange -> 是 allow 哪個 ip 可以來 call，這邊拿掉
+  # loadBalancerSourceRanges: ->  allow which IP can access this DataBase, shouldn't fill here. Unless you need to specify only allow several ip to access this db.
+  #   - "60.251.10.52/32"
+  #   - "60.251.33.86/32"
+  #   - "1.160.218.174/32"
   selector:
     app: pgsql
   externalTrafficPolicy: Cluster # controls how the traffic is distributed among the nodes when the service type is LoadBalancer. Distributes external traffic across all nodes in the cluster, regardless of whether they host the service's endpoint pods
