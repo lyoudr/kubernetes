@@ -89,6 +89,30 @@
 
     `kubectl apply -f k8s/deployment.yaml`
 
+4. Define BackendConfig for health check
+
+- sales/k8s/backendconfig.yaml
+
+    ```
+    apiVersion: cloud.google.com/v1
+    kind: BackendConfig
+    metadata:
+    name: product-ingress
+    spec:
+    healthCheck:
+        checkIntervalSec: 5
+        timeoutSec: 5
+        type: HTTP
+        requestPath: /healthz # Adjust this to match your actual health check path
+        port: 80
+    ```
+
+- deploy config file
+
+    `
+    kubectl apply -f sales/k8s/backendconfig.yaml
+    `
+
 4. Define a Service to include this Pod
 
 - service.yaml
@@ -114,6 +138,57 @@
 ### Product Service
 ---
 - exactly the same procedure as Sales Service
+
+### Ingress
+---
+![Architetcture](https://github.com/lyoudr/kubernetes/blob/main/ingress.png)
+> In GKE, an Ingress object defines rules for routing HTTP(S) traffic to applications running in a cluster. An Ingress object is associated with one or more Service objects, each of which is associated with a set of Pods.
+- Two Types:
+1. Ingress for external Application Load Balancers deploys the classic Application Load Balancer. This internet-facing load balancer is deployed globally across Google's edge network as a managed and scalable pool of load balancing resources. 
+2. Ingress for internal Application Load Balancers deploys the internal Application Load Balancer. These internal Application Load Balancers are powered by Envoy proxy systems outside of your GKE cluster, but within your VPC network.
+
+- product/k8s/ingress.yaml
+
+    ```
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress 
+    metadata:
+    name: product-ingress
+    annotations:                             # are used to provide additional configuration
+        kubernetes.io/ingress.class: "gce"   # Process the Ingress manifest and create an external Application Load Balancer.
+    spec:
+    rules:
+    - http:
+        paths:  
+        - path: /product
+            pathType: ImplementationSpecific
+            backend:
+            service:
+                name: product-service
+                port:
+                number: 80
+        - path: /product/*
+            pathType: ImplementationSpecific
+            backend:
+            service:
+                name: product-service
+                port:
+                number: 80
+        - path: /sales
+            pathType: ImplementationSpecific
+            backend:
+            service:
+                name: sales-service
+                port: 
+                number: 80
+        - path: /sales/*
+            pathType: ImplementationSpecific
+            backend:
+            service:
+                name: sales-service
+                port: 
+                number: 80
+    ```
 
 ### DataBase
 ---
