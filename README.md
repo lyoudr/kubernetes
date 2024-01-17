@@ -8,6 +8,7 @@
 #### Cluster
 --- 
 - Type: Autopilot Cluster, which I don't need to manage the underlying VMs.
+![Example Image](https://drive.google.com/file/d/1WWaf2Crm3h0AOw8uU1f1XDjniYoiuHb0/view?usp=sharing)
 
 #### Sales Service
 ---
