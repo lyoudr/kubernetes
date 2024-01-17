@@ -8,6 +8,7 @@
 #### Cluster
 --- 
 - Type: Autopilot Cluster, which I don't need to manage the underlying VMs.
+
 ![Architetcture](https://github.com/lyoudr/kubernetes/blob/main/interview.drawio.png)
 
 #### Sales Service
