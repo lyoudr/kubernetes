@@ -2,8 +2,10 @@ from sql_app import crud, database, models
 
 from sqlalchemy.orm import Session 
 from fastapi import FastAPI, Depends 
+from google.cloud import storage 
 import requests
 import json
+import csv 
 
 models.Base.metadata.create_all(bind=database.engine)
 
@@ -42,4 +44,27 @@ def get_product(
     res = crud.get_product(db, 1)
     return res
 
-    
+@app.post('/product/create_file')
+def create_file():
+    data = {
+        'Name': ['John', 'Alice', 'Bob'],
+        'Age': [25, 30, 22],
+        'City': ['New York', 'San Francisco', 'Seattle']
+    }
+    csv_file = '/cache/output.csv'
+    # Writing to CSV file
+    with open(csv_file, 'w', newline='') as csvfile:
+        # Creating a CSV writer object
+        csv_writer = csv.writer(csvfile)
+        # Writing the header
+        csv_writer.writerow(data.keys())
+        # Writing the data
+        for row in zip(*data.values()):
+            csv_writer.writerow(row)
+    upload_file('/cache/output.csv')
+
+def upload_file(local_path:str):
+    client = storage.Client() 
+    bucket = client.bucket('test_kd')
+    blob = bucket.blob('csv/output.csv')
+    blob.upload_from_filename(local_path)

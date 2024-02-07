@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: sales
-        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/sales:v3
+        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/sales:v4
         ports:
         - containerPort: 80
         resources:

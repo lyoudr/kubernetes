@@ -336,3 +336,69 @@
 
     Base = declarative_base()
     ```
+
+### Pod Permission
+---
+1. Create a Service account 
+2. Create service account json key file
+3. Create kuberenetes Secret from this json key file
+```
+kubectl create secret generic pubsub-key --from-file=key.json=PATH-TO-KEY-FILE.json
+```
+4. Configure Pod to use this service account key
+```
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: product 
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: product 
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      volumes:
+      - name: google-cloud-key  # use secret we just create in gke, and in this secrt, its contains service accout key we generated
+        secret:
+          secretName: pubsub-key
+      - name: csv-volume
+        emptyDir: {} # An emptyDir volume for temporary storage
+      containers:
+      - name: product
+        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/product:v30
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/secrets/google
+          name: google-cloud-key
+        - mountPath: /cache
+          name: csv-volume
+        resources:
+          limits:
+            memory: "10Mi"
+            cpu: "10m"
+          requests:
+            memory: "5Mi"
+            cpu: "5m"
+        env: 
+          - name: POSTGRES_HOST
+            value: pgsql  # The hostname of your PostgreSQL service (serviceName in StatefulSet)
+          - name: POSTGRES_PORT
+            value: "5432"  # The port on which PostgreSQL is running
+          - name: POSTGRES_DB
+            value: ann  # The name of your PostgreSQL database
+          - name: POSTGRES_USER
+            value: ann  # The username for connecting to PostgreSQL
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pgsql
+                key: POSTGRES_PASSWORD  # Reference to the Secret for PostgreSQL password
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /var/secrets/google/key.json
+```
+5. Grant related permissions to this service account

@@ -12,11 +12,22 @@ spec:
       labels:
         app: product
     spec:
+      volumes:
+      - name: google-cloud-key  # use secret we just create in gke, and in this secrt, its contains service accout key we generated
+        secret:
+          secretName: pubsub-key
+      - name: csv-volume
+        emptyDir: {} # An emptyDir volume for temporary storage
       containers:
       - name: product
-        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/product:v18
+        image: asia-east1-docker.pkg.dev/ikala-cloud-swe-dev-sandbox/ann-test/product:v30
         ports:
         - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/secrets/google
+          name: google-cloud-key
+        - mountPath: /cache
+          name: csv-volume
         resources:
           limits:
             memory: "10Mi"
@@ -38,3 +49,5 @@ spec:
               secretKeyRef:
                 name: pgsql
                 key: POSTGRES_PASSWORD  # Reference to the Secret for PostgreSQL password
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /var/secrets/google/key.json
