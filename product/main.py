@@ -1,5 +1,6 @@
 from sql_app import crud, database, models 
 
+from cachetools import TTLCache
 from sqlalchemy.orm import Session 
 from fastapi import FastAPI, Depends 
 from google.cloud import storage 
@@ -18,6 +19,16 @@ def get_db():
         yield db 
     finally:
         db.close()
+
+# Create a cache with a  TTL (Time-to-Live) of 300 seconds 
+cache = TTLCache(maxsize = 100, ttl=300)
+
+# Dependency to get an item from the database with caching 
+def get_item_with_cache(item_id: int, db: Session = Depends(get_db)):
+    cached_item = cache.get(item_id)
+    if cached_item:
+        return cached_item
+    
 
 @app.get('/')
 def read_root():
